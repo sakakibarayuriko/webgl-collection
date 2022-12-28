@@ -10,19 +10,26 @@ const CellularNoiseContent: React.FC = () => {
   useEffect(() => {
     if (!$shader || $shader === null) return;
 
-    shader($shader.current!, vertexShader, fragmentShader, {
-      uniforms: {
-        time: {
-          value: 0,
-        },
-        mouse: {
-          value: new THREE.Vector2(0.0, 0.0),
-        },
-        resolution: {
-          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+    shader(
+      $shader.current!,
+      vertexShader,
+      fragmentShader,
+      {
+        uniforms: {
+          time: {
+            value: 0,
+          },
+          mouse: {
+            value: new THREE.Vector2(0, 0),
+          },
+          resolution: {
+            value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+          },
         },
       },
-    });
+      false,
+      true
+    );
   }, []);
   return <div id="shader" ref={$shader}></div>;
 };

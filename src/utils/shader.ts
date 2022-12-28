@@ -5,7 +5,8 @@ const shader = (
   vertexShader: string,
   fragmentShader: string,
   material: THREE.ShaderMaterialParameters,
-  hasTexture?: boolean
+  hasTexture?: boolean,
+  isLowerLeftOrigin?: boolean
 ) => {
   const scene = new THREE.Scene();
   const renderer = new THREE.WebGLRenderer();
@@ -80,10 +81,16 @@ const shader = (
   };
 
   window.addEventListener("mousemove", (e) => {
-    material.uniforms.mouse.value.x =
-      (e.clientX - window.innerWidth / 2.0) / (window.innerWidth / 2.0);
-    material.uniforms.mouse.value.y =
-      -(e.clientY - window.innerHeight / 2.0) / (window.innerHeight / 2.0);
+    if (isLowerLeftOrigin) {
+      material.uniforms.mouse.value.x = e.clientX / window.innerWidth;
+      material.uniforms.mouse.value.y =
+        (window.innerHeight - e.clientY) / window.innerHeight;
+    } else {
+      material.uniforms.mouse.value.x =
+        (e.clientX - window.innerWidth / 2.0) / (window.innerWidth / 2.0);
+      material.uniforms.mouse.value.y =
+        -(e.clientY - window.innerHeight / 2.0) / (window.innerHeight / 2.0);
+    }
   });
 
   init();
