@@ -10,19 +10,30 @@ const shader = (
   const scene = new THREE.Scene();
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  const shaderMaterial = new THREE.RawShaderMaterial({
+    uniforms: material.uniforms,
+    vertexShader,
+    fragmentShader,
+  });
+  const geometry = hasTexture
+    ? new THREE.PlaneGeometry(1.0, 1.0)
+    : new THREE.PlaneGeometry(2.0, 2.0);
+  const mesh = new THREE.Mesh(geometry, shaderMaterial);
+  const clock = new THREE.Clock();
+  $target.appendChild(renderer.domElement);
   let camera;
-  const generateCameraParam = (scale: number) => {
-    const aspect = window.innerWidth / window.innerHeight;
-    return {
-      aspect: aspect,
-      left: -aspect * scale,
-      right: aspect * scale,
-      top: scale,
-      bottom: -scale,
-    };
-  };
-  const cameraParam = generateCameraParam(2.0);
   if (hasTexture) {
+    const generateCameraParam = (scale: number) => {
+      const aspect = window.innerWidth / window.innerHeight;
+      return {
+        aspect: aspect,
+        left: -aspect * scale,
+        right: aspect * scale,
+        top: scale,
+        bottom: -scale,
+      };
+    };
+    const cameraParam = generateCameraParam(2.0);
     camera = new THREE.OrthographicCamera(
       cameraParam.left,
       cameraParam.right,
@@ -32,6 +43,7 @@ const shader = (
       20.0
     );
     camera.position.set(0, 0, 10);
+    mesh.scale.set(cameraParam.right * 2, cameraParam.top * 2, 1);
   } else {
     camera = new THREE.PerspectiveCamera(
       0,
@@ -40,18 +52,6 @@ const shader = (
       0
     );
   }
-  const shaderMaterial = new THREE.RawShaderMaterial({
-    uniforms: material.uniforms,
-    vertexShader,
-    fragmentShader,
-  });
-  const geometry = new THREE.PlaneGeometry(2.0, 2.0);
-  const mesh = new THREE.Mesh(geometry, shaderMaterial);
-  if (hasTexture) {
-    mesh.scale.set(cameraParam.right * 2, cameraParam.top * 2, 1);
-  }
-  const clock = new THREE.Clock();
-  $target.appendChild(renderer.domElement);
 
   const init = () => {
     scene.add(mesh);
