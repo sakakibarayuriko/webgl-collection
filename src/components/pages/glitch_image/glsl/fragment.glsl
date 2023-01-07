@@ -10,7 +10,7 @@ float random (vec2 st) {
 
 void main(){
   vec2 u = vUv;
-  float r = random(vec2(u.y * .001, mod(time * 40.0 * mouse.x, 40.0 * mouse.y)));
+  float r = random(vec2(u.y * 0.0001, mod(time * 40.0 * mouse.y, 40.0 * mouse.y)));
   vec3 outCol = texture2D(texture, u).rgb;
 
   if (r < 0.1) {
